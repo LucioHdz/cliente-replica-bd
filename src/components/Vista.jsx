@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 
 
 
-const FetchAPI = async (servidor1, servidor2) => {
+const obtenerDatos = async (servidor1, servidor2) => {
     const datos = fetch(servidor1)
         .then(res => res.json())
         .then(obj => {
@@ -11,12 +11,12 @@ const FetchAPI = async (servidor1, servidor2) => {
             return obj
         })
         .catch(err => {
-            if (err) return FetchAPI(servidor2, servidor1);
+            if (err) return obtenerDatos(servidor2, servidor1);
         })
     return datos
 
 }
-const POSTAPI = async (obj, servidor1, servidor2) => {
+const subir = async (obj, servidor1, servidor2) => {
 
 
     const datos = fetch(servidor1, obj)
@@ -25,7 +25,7 @@ const POSTAPI = async (obj, servidor1, servidor2) => {
             return obj
         })
         .catch(err => {
-            if (err) return POSTAPI(obj, servidor2, servidor1);
+            if (err) return subir(obj, servidor2, servidor1);
         })
     return datos
 
@@ -36,7 +36,7 @@ const Vista = () => {
     const [nombre, setNombre] = React.useState();
     const [resultados, setResultados] = React.useState();
     const actualizar = async () => {
-        FetchAPI("http://localhost:5000/", "http://192.168.96.249:5000/").then((datos) => {
+        obtenerDatos("http://localhost:5000/", "http://192.168.96.249:5000/").then((datos) => {
             console.log(datos)
             setResultados(datos.reverse())
         })
@@ -57,7 +57,7 @@ const Vista = () => {
             body: JSON.stringify(obj)
         }
 
-        POSTAPI(data, "http://localhost:5000/", "http://192.168.96.249:5000/").then((datos) => {
+        subir(data, "http://localhost:5000/", "http://192.168.96.249:5000/").then((datos) => {
             Swal.fire('Agregado');
             actualizar();
             setNombre('');
@@ -67,6 +67,7 @@ const Vista = () => {
                 Swal.fire('No se pudo agregar, intentalo más tarde');
             })
     }
+    
     return (
         <>
             <center><h1 class="mt-3">CONEXION BASE DE DATOS</h1></center>
